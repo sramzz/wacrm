@@ -52,4 +52,6 @@ COPY --from=builder --chown=nextjs:nextjs /app/public ./public
 
 USER nextjs
 EXPOSE 3000
+HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=5 \
+  CMD ["node", "-e", "fetch('http://127.0.0.1:3000/login', { redirect: 'manual', signal: AbortSignal.timeout(4000) }).then(response => { console.log('WACRM /login HTTP ' + response.status); process.exit(response.status === 200 ? 0 : 1); }, () => process.exit(1));"]
 CMD ["node", "server.js"]
